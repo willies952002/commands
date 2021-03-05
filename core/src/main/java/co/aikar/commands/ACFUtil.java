@@ -466,11 +466,17 @@ public final class ACFUtil {
 
 
     public static Number parseNumber(String num, boolean suffixes) {
-        ApplyModifierToNumber applyModifierToNumber = new ApplyModifierToNumber(num, suffixes).invoke();
-        num = applyModifierToNumber.getNum();
-        double mod = applyModifierToNumber.getMod();
+        if (num.matches("^0x([0-9A-Fa-f]*)$")) {
+            return Long.parseLong(num.substring(2), 16);
+        } else if (num.matches("^0b([01]*)$")) {
+            return Long.parseLong(num.substring(2), 2);
+        } else {
+            ApplyModifierToNumber applyModifierToNumber = new ApplyModifierToNumber(num, suffixes).invoke();
+            num = applyModifierToNumber.getNum();
+            double mod = applyModifierToNumber.getMod();
 
-        return Double.parseDouble(num) * mod;
+            return Double.parseDouble(num) * mod;
+        }
     }
 
     public static BigDecimal parseBigNumber(String num, boolean suffixes) {
